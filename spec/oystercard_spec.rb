@@ -57,13 +57,5 @@ describe OysterCard do
       oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
     end
-
-    it 'journey contains information about entry zones' do
-      expect(oystercard.journeys.last.entry_station[:entry_station].zone).to eq :entry_zone
-    end
-
-    it 'journey contains information about exit zones' do
-      expect(oystercard.journeys.last[:exit_station].zone).to eq :exit_zone
-    end
   end
 end
