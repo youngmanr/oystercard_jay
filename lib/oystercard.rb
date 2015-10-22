@@ -17,7 +17,7 @@ class OysterCard
   def touch_in(station)
     raise "min funds not available" if balance < MIN_FARE
     unless @current_journey == nil
-      @current_journey.exit_journey( station)
+      @current_journey.exit_journey( nil)
       deduct(@current_journey.fare)
       @journeys << @current_journey
     end

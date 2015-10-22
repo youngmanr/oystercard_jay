@@ -30,22 +30,44 @@ describe OysterCard do
     end
   end
 
-  describe '#touch_in' do
-
+  context '#touch_in without minimum balance' do
     it 'raises an error if min funds not available' do
       expect { oystercard.touch_in(entry_station) }.to raise_error "min funds not available"
     end
   end
 
-  describe '#touch_out' do
+  context 'BAD #touch_in foloowed by #touching_in' do
+    it 'deducts the penalty fare on touch out' do
+      oystercard.top_up(10)
+      allow(journey).to receive(:entry_journey).with(entry_station).and_return(entry_station)
+      oystercard.touch_in(entry_station)
+      expect{ oystercard.touch_in(entry_station) }.to change { oystercard.balance }.by -OysterCard::PENALTY_FARE
+    end
+  end
 
-    it 'deducts the fare on touch out' do
+  context 'BAD #touch_out no #touching_in' do
+    it 'deducts the penalty fare on touch out' do
       allow(journey).to receive(:exit_journey).with(exit_station).and_return(exit_station)
       expect{ oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -OysterCard::PENALTY_FARE
     end
+  end
 
-    it 'adds a journey to journey history' do
+  context 'GOOD #touch_in followed by touch_out' do
+    it 'deducts the min fare on touch out' do
+      allow(journey).to receive(:entry_journey).with(entry_station).and_return(entry_station)
       allow(journey).to receive(:exit_journey).with(exit_station).and_return(exit_station)
+      oystercard.top_up(10)
+      oystercard.touch_in(entry_station)
+      expect{ oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -OysterCard::MIN_FARE
+    end
+  end
+
+  describe 'GOOD #touch_in followed by #touch_out' do
+    it 'adds a journey to journey history' do
+      allow(journey).to receive(:entry_journey).with(entry_station).and_return(entry_station)
+      allow(journey).to receive(:exit_journey).with(exit_station).and_return(exit_station)
+      oystercard.top_up(10)
+      oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
       expect(oystercard.journeys).not_to be_empty
     end
