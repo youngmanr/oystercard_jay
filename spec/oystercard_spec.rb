@@ -41,7 +41,7 @@ describe OysterCard do
   end
 
   context 'BAD #touch_in followed by #touching_in' do
-    it 'deducts the penalty fare on touch out' do
+    it 'deducts the penalty fare on touch in' do
       allow(journey).to receive(:entry_journey).with(entry_station).and_return(entry_station)
       oystercard.touch_in(entry_station)
       expect{ oystercard.touch_in(entry_station) }.to change { oystercard.balance }.by -OysterCard::PENALTY_FARE
