@@ -31,8 +31,6 @@ class OysterCard
     @current_journey = nil
   end
 
-
-
   def top_up(amount)
     fail "The maximum balance is #{MAX_BALANCE}" if amount + balance >= MAX_BALANCE
     @balance += amount
