@@ -1,3 +1,4 @@
+
 require 'oystercard'
 
 describe OysterCard do
@@ -7,13 +8,11 @@ describe OysterCard do
   let(:entry_station) {double :entry_station, name: :old_street, zone: :entry_zone }
   let(:exit_station) {double :exit_station, name: :baker_street, zone: :exit_zone }
 
+  let(:journey) {double :journey}
+
   describe 'initialization' do
     it 'has a default balance of 0' do
       expect(oystercard.balance).to eq 0
-    end
-
-    it 'a new oystercard is not in journey' do
-      expect(oystercard.in_journey?).to be false
     end
 
     it 'the list of journeys is empty' do
@@ -33,37 +32,20 @@ describe OysterCard do
 
   describe '#touch_in' do
 
-    it 'is in journey after card has touched in' do
-      oystercard.top_up(10)
-      oystercard.touch_in(entry_station)
-      expect(oystercard).to be_in_journey
-    end
-
     it 'raises an error if min funds not available' do
       expect { oystercard.touch_in(entry_station) }.to raise_error "min funds not available"
-    end
-
-    it 'stores entry station as variable' do
-      oystercard.top_up(10)
-      oystercard.touch_in(entry_station)
-      expect(oystercard.entry_station).to eq entry_station
     end
   end
 
   describe '#touch_out' do
 
-    it 'is not in journey after card has touched out' do
-      oystercard.top_up(10)
-      oystercard.touch_in(entry_station)
-      oystercard.touch_out(exit_station)
-      expect(oystercard).not_to be_in_journey
-    end
-
     it 'deducts the fare on touch out' do
+      allow(journey).to receive(exit_journey).with(exit_station)
       expect{ oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -OysterCard::MIN_FARE
     end
 
     it 'adds a journey to journey history' do
+      allow(journey).to receive(exit_journey).with(exit_station).and_return(exit_station)
       oystercard.touch_out(exit_station)
       expect(oystercard.journeys).not_to be_empty
     end
