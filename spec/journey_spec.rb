@@ -1,14 +1,18 @@
 require 'journey'
 
 describe Journey do
-  let ( :station) {double :old_street}
-  subject( :journey) { described_class.new station}
+  let ( :entry_station) {double :old_street}
+  let ( :exit_station) {double :baker_street}
 
-  it {is_expected.to respond_to :entry_station}
-  it {is_expected.to respond_to :exit_station}
+  subject( :journey) { described_class.new :old_street}
 
-  it 'stores entry station as variable' do
-    expect(journey.entry_station).to eq station
+  it 'journey remembers entry station' do
+    expect(journey.entry_station).to eq :old_street
+  end
+
+  it 'journey remembers exit station' do
+    journey.exit_journey :baker_street
+    expect(journey.exit_station).to eq :baker_street
   end
 
 end
