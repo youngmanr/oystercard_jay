@@ -13,7 +13,7 @@ class Journey
   end
 
   def exit_journey station
-    exit_station = station
+    @exit_station = station
   end
 
   def fare

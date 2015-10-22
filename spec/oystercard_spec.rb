@@ -41,7 +41,7 @@ describe OysterCard do
 
     it 'deducts the fare on touch out' do
       allow(journey).to receive(:exit_journey).with(exit_station).and_return(exit_station)
-      expect{ oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -OysterCard::MIN_FARE
+      expect{ oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -OysterCard::PENALTY_FARE
     end
 
     it 'adds a journey to journey history' do
@@ -59,7 +59,7 @@ describe OysterCard do
     end
 
     it 'journey contains information about entry zones' do
-      expect(oystercard.journeys.last[:entry_station].zone).to eq :entry_zone
+      expect(oystercard.journeys.last.entry_station[:entry_station].zone).to eq :entry_zone
     end
 
     it 'journey contains information about exit zones' do
